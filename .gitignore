@@ -1,0 +1,20 @@
+# Patient data
+data/
+CSV.csv
+patient_data_clean.csv
+
+# Derived analysis output
+teff_boot.npy
+
+# Generated figures
+figures/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
