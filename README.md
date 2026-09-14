@@ -39,6 +39,9 @@ contains the corrected, from-scratch reanalysis.
 │                                               # selection, final Teff/Tbio
 │                                               # with bootstrap CI, covariate
 │                                               # analysis, figures
+├── 03_sex_comparison.ipynb                    # tests sex as a covariate on
+│                                               # intercept and slope; null
+│                                               # result (see Key results)
 └── patient_data_clean.csv                     # output of notebook 01
 ```
 
@@ -72,8 +75,11 @@ later cells depend on earlier ones):
 1. `00_validate_lmm.ipynb` — confirms the model implementation is correct
    before trusting it on real data
 2. `01_data_cleaning_and_teff_reconciliation.ipynb` — produces
-   `patient_data_clean.csv`
+   `patient_data_clean.csv` (requires the raw CSV to include a `sex`
+   column; the cleaning step carries it through automatically if present)
 3. `02_final_model_and_results.ipynb` — final results and figures
+4. `03_sex_comparison.ipynb` — tests sex as a covariate (optional, only
+   needed if you want to reproduce the sex-comparison result)
 
 If you'd rather run these as plain scripts (e.g. in CI), each notebook
 can be executed non-interactively with:
@@ -110,21 +116,17 @@ jupyter nbconvert --to notebook --execute 00_validate_lmm.ipynb
   shows injected activity, not weight, is the variable associated with
   decay rate in this dataset.
 
-## Data availability
-
-The patient-level dataset is not included in this repository.
-The underlying clinical data are subject to institutional and/or
-ethical restrictions on data sharing.
-
-The analysis code and notebooks are provided to document the
-analysis workflow and facilitate reproducibility where permitted.
-
 ## Key results
 
 | Quantity | Estimate | 95% CI |
 |---|---|---|
 | Population Teff | 87.8 min | [74.7, 105.0] |
 | Population Tbio | 438.6 min | [233.9, 2292.1] |
+
+No statistically significant difference in decay rate or starting dose
+rate was found between male and female patients (LRT p=0.77 on the
+decay rate, p=0.47 on the intercept, p=0.65 jointly; robust to
+adjustment for injected activity, p=0.88). See `03_sex_comparison.ipynb`.
 
 Note: the Tbio confidence interval is very wide by construction — Tbio is
 derived as 1/(1/Teff − 1/T_phys), a difference of two similar-sized rate
@@ -170,6 +172,7 @@ were reached and verified, not because it should be reported as a result.
   bootstrap 95% CIs
 - The covariate finding (injected activity, not weight, associated with
   decay rate), reported as hypothesis-generating
+- The sex-comparison result (no significant difference), reported briefly
 - Descriptive statistics table
 - Figure: population dose-rate curve with CI band
 - Figure: raw per-patient trajectories vs. shrinkage-fitted trajectories
@@ -197,7 +200,7 @@ were reached and verified, not because it should be reported as a result.
 
 - n = 36 patients; multiple comparisons were run in the covariate
   analysis (report as hypothesis-generating, not confirmatory)
-- Age and sex were not collected in this dataset
+- Age was not collected in this dataset
 - Only 2–3 measurements per patient — cannot estimate individual
   per-patient decay rates, only a population-average rate with
   patient-specific starting levels
